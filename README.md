@@ -20,15 +20,15 @@ RUN
 
 版本更新说明
 ------------
-BigLog2增加了gearman模块，各个模块的通信都通过gearman来实现,主要模块如下：
+BigLog3增加了gearman模块，通过gearman模块来查询IP对应的地理位置
 
-BigLogCollect 单条日志信息（字典）接收
+BigLogTimer.py 单条日志信息（字典）接收,可以指定统计的时间
 
-BigLogDomain  Mysql域名数据库创建（一个域名一个库，包含统计信息）
+BigLogDomain.py  Mysql域名数据库创建（一个域名一个库，包含统计信息）
 
-BigLogMysql   一段时间日志统计信息导入数据库
+BigLogMysql.py   一段时间日志统计信息导入数据库
 
-BigLogGeo     ip对应地理位置查询
+BigLogGeo.py     ip对应地理位置查询
 
 --------------
 新增加 redis 队列缓存
