@@ -18,6 +18,10 @@ import myredis
 
 class RecvLog(object):
 	@classmethod
+	def parse_input_log_type(self,biglog):
+		
+
+	@classmethod
 	def recv_udp_log(self,PORT=515):
 		"""receive logs from udp socket chosen port.default udp 515"""
 		HOST = ''   # use '' to expose to all networks

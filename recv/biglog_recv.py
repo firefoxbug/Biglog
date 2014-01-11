@@ -9,11 +9,11 @@ import sys
 sys.path.append("../")
 
 from log_trans import RecvLog
-from biglog_addjob import connect2gearman
+#from biglog_addjob import connect2gearman
 from myredis import connect2redis
 
 def main():
-	connect2gearman()
+#	connect2gearman()
 	connect2redis(host='127.0.0.1')
 	biglog_rv = RecvLog.recv_udp_log()
 
