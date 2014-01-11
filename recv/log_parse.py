@@ -14,7 +14,6 @@ import datetime
 
 log_info = {}
 
-#from log_mysql import DomainDB
 from biglog_addjob import add_gearman_job
 import myredis
 
@@ -31,9 +30,6 @@ class ParseLog(object):
 		if not log_info['db_name']:
 			return False
 
-#		if not DomainDB.db_exists(log_info['db_name']):
-#			return False
-
 		if not self.get_remote_ip():
 			return False
 
@@ -41,6 +37,9 @@ class ParseLog(object):
 #		add_gearman_job("BigLogDomain",log_info['db_name'],wait_until_complete=False,background=True)
 #		add_gearman_job("BigLogDomain",log_info['db_name'])
 		
+#		if not DomainDB.db_exists(log_info['db_name']):
+#			return False
+
 #		self.write_into_domain_file(self.log_line,log_info['db_name'])
 		self.write_into_file(self.log_line,log_info['db_name'])
 

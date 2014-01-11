@@ -19,7 +19,7 @@ import myredis
 class RecvLog(object):
 	@classmethod
 	def parse_input_log_type(self,biglog):
-		
+		pass
 
 	@classmethod
 	def recv_udp_log(self,PORT=515):
@@ -49,11 +49,9 @@ class RecvLog(object):
 				data, addr = s.recvfrom(4096)
 				if not data:
 					continue
-
 				try :
 					if biglog_plog.parse(data):
 		#				print log_parse.log_info
-#						biglog_slog.send_udp_log(log_parse.log_info)
 						myredis.redis_q.put('BiglogDict',json.dumps(log_parse.log_info))
 #						add_gearman_job("BigLogCollect",log_parse.log_info)
 				except Exception,e:
