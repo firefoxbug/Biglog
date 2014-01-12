@@ -34,9 +34,9 @@ class CustomGearmanWorker(gearman.GearmanWorker):
 		# Return True if you want to continue polling, replaces callback_fxn
 		return True
 
-def redis_worker():
+def domain_worker(mysql_info):
 	biglog_redis.connect2redis(host='127.0.0.1')
-	mysql_init()
+	mysql_init(mysql_info['host'],mysql_info['username'],mysql_info['password'])
 	while True:
 		db_name = biglog_redis.redis_q.get('BiglogDomainDB')
 		DomainDB.db_exists(db_name)
@@ -240,7 +240,7 @@ class DomainDB(object):
 
 
 """read from gearman and create database"""
-def gearman_worker():
+def gearman_worker(mysql_info):
 	try :
 		new_worker = CustomGearmanWorker(['127.0.0.1'])
 	except Exception,e:
@@ -248,7 +248,7 @@ def gearman_worker():
 		print "%s\n"%(str(e))
 		sys.exit(1)
 
-	mysql_init()
+	mysql_init(mysql_info['host'],mysql_info['username'],mysql_info['password'])
 	new_worker.register_task("BigLogDomain",create_db)
 	new_worker.work()
 
@@ -261,5 +261,5 @@ def create_db(gearman_worker, job):
 	return "True"
 
 if __name__ == '__main__':
-	redis_worker()
+	domain_worker()
 #	gearman_worker()

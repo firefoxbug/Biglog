@@ -12,7 +12,7 @@ from data_trans import RecvLog
 from biglog_mysql import mysql_init
 #from BigLogCollect import collect_log
 from biglog_redis import connect2redis
-import biglog_addjob import connect2gearman
+import biglog_gearman import connect2gearman
 
 def main():
 	mysql_init()

@@ -46,7 +46,7 @@ def geo_search(gearman_worker, job):
 #	print results
 	
 
-def main():
+def geoip_worker():
 	try :
 		new_worker = CustomGearmanWorker(['127.0.0.1'])
 	except Exception,e:
@@ -57,6 +57,9 @@ def main():
 
 	new_worker.register_task("BigLogGeo", geo_search)
 	new_worker.work()
+
+def main():
+	geoip_worker()
 
 if __name__ == '__main__':
 	main()

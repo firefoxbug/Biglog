@@ -16,7 +16,7 @@ sys.path.append("../")
 import biglog_redis
 from data_record import RecordLogInfo
 from data_display import DisplayLogs
-from biglog_addjob import connect2gearman
+from biglog_gearman import connect2gearman
 
 biglog_rl = ""
 time_str = ""

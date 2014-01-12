@@ -7,7 +7,14 @@
 # Function : biglog main start
 
 import os
-
+import sys
+sys.path.append("./recv")
+from BigLogRecv import biglog_recv_input_log
+sys.path.append("./daemon")
+from BigLogDomain import domain_worker
+sys.path.append("./daemon/geoip")
+from BigLogGeo import geoip_worker
+from BigLogMysql import mysql_worker
 
 '''
 biglog结构体定义了biglog的日志输入端和输出端，输入端只能选择一个选项，输出端也只能选择一个选项
@@ -39,20 +46,23 @@ biglog {
 }
 '''	
 
-class ParseConf(object):
-	def __init__(self):
-	#	self.work_dir = "/usr/local/biglog/conf/"
-		self.work_dir = "./conf/"
-		self.conf_dir = self.work_dir + "biglog.conf"
-		self.conf_tmp = self.work_dir + ".biglog.conf.bak"
+class BigLog():
+	"""biglog 主类"""
+	def __init__(self, arg):
+		self.child_process_pid = {"RECV":-1,"COLLECT":-1,"GeoIP":-1,"DOMAIN":-1,"MYSQL":[]}
+
 		self.biglog = {}
 		self.biglog["input"] = {}
 		self.biglog["output"] = {}
 
-	def parse_conf(self):
+	"""解析biglog配置文件"""
+	def parse_biglog_conf(self):
+	#	self.work_dir = "/usr/local/biglog/conf/"
+		self.work_dir = "./conf/"
+		self.conf_dir = self.work_dir + "biglog.conf"
+		self.conf_tmp = self.work_dir + ".biglog.conf.bak"
 		#定义一个栈
 		stack = []
-		
 		#去除#开头的注释和空行
 		grep_cmd = "grep -v -E '^$|^#' %s > %s"%(self.conf_dir,self.conf_tmp)
 #		print grep_cmd
@@ -71,19 +81,81 @@ class ParseConf(object):
 		self.biglog["output"]["mysql"]["username"] = "root"
 		self.biglog["output"]["mysql"]["password"] = "biglog"
 
-		return self.biglog
+	"""启动所有进程"""
+	def start_work(self):
+		self.start_GeoIP()
 
-	def get_mysql_info(self):
-		self.biglog["output"]["mysql"] = {}
 
-'''解析日志输入和输出方式'''
-def parse_input_log_type(biglog):
+	"""IP地理位置查询守护"""
+	def start_GeoIP(self):
+		pid = os.fork()
+		if pid == 0:
+			print "Starting GeoIP worker..."
+			geoip_worker()
+		else:
+			self.child_process_pid["GeoIP"] = pid
 
+	"""域名数据库建立守护"""
+	def start_Domain(self,mysql_info):
+		pid = os.fork()
+		if pid == 0:
+			print "Starting Domain worker..."
+			domain_worker(mysql_info)
+		else:
+			self.child_process_pid["DOMAIN"] = pid		
+	
+	"""Mysql语句插入守护"""
+	def start_Mysqlist(self,mysql_info):
+		pid = os.fork()
+		if pid == 0:
+			print "Starting Mysqlist worker..."
+			mysql_worker(mysql_info)
+		else:
+			self.child_process_pid["MYSQL"].append(pid)		
+
+	"""日志接收模块守护"""
+	def start_Recv(self,PORT):
+		pid = os.fork()
+		if pid == 0:
+			print "Starting Mysqlist worker..."
+			biglog_recv_input_log(PORT)
+		else:
+			self.child_process_pid["RECV"] = pid		
+
+	"""解析输入和输出类型"""
+	def input_log_type(self):
+		input_udp_port = 515
+		if self.biglog["input"] == "file":
+			print "Biglog input log type ==>> file"
+		elif self.biglog["input"] == "pipe":
+			print "Biglog input log type ==>> pipe"
+		elif self.biglog["input"] == "syslog":
+			print "Biglog input log type ==>> syslog"
+			if self.biglog["input"]["syslog"]["udp"]:
+				input_udp_port = self.biglog["input"]["syslog"]["udp"]
+				"""启动日志接收模块"""
+				self.start_Recv(input_udp_port)
+
+		"""启动IP地理位置查询进程"""
+		self.start_GeoIP()
+
+		if self.biglog["output"] == "mysql":
+			print "Biglog output log ==>> mysql"
+			mysql_info = {"host":"127.0.0.1","port":3306,"username":"root","password":"biglogg"}
+			for key in mysql_info.keys():
+				mysql_info[key] = self.biglog["output"]["mysql"][key]
+			
+			"""启动域名查询进程"""
+			self.start_Domain(mysql_info)
+
+			"""启动Mysql插入进程"""
+			self.start_Mysqlist(mysql_info)
+		elif self.biglog["output"] == "file":
+			print "Biglog output log ==>> file"
 
 def main():
-	parse_conf_i = ParseConf()
-	biglog = parse_conf_i.parse_conf()
-	parse_input_log_type(biglog)
+	biglog_i = BigLog()
+	biglog_i.parse_biglog_conf()
 #	print biglog
 
 

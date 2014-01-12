@@ -13,14 +13,10 @@ import socket
 
 from log_parse import ParseLog
 import log_parse
-#from biglog_addjob import add_gearman_job
+#from biglog_gearman import add_gearman_job
 import biglog_redis
 
 class RecvLog(object):
-	@classmethod
-	def parse_input_log_type(self,biglog):
-		pass
-
 	@classmethod
 	def recv_udp_log(self,PORT=515):
 		"""receive logs from udp socket chosen port.default udp 515"""

@@ -20,7 +20,7 @@ sys.path.append("../")
 import biglog_mysql
 import biglog_redis
 
-import biglog_addjob
+import biglog_gearman
 unit_summary = {}
 unit_summary['unique_ip'] = 0
 unit_summary['referer'] = 0
@@ -122,7 +122,7 @@ class DisplayLogs():
 			percent = self.get_percent(request_all,request_count)
 			req_size = log[domain][log_type][ip_key]['bandwidth']
 #			ip_location = self.search_ip(str(ip_key))
-			ip_location = biglog_addjob.search_ip(str(ip_key))
+			ip_location = biglog_gearman.search_ip(str(ip_key))
 			values = self.summary_log_visitor_ip_sql(db_name,log_type,ip_key,percent,request_count,req_size,ip_location)
 			ip_values_list.append(values)
 

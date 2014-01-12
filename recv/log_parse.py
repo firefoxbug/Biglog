@@ -14,7 +14,7 @@ import datetime
 
 log_info = {}
 
-from biglog_addjob import add_gearman_job
+from biglog_gearman import add_gearman_job
 import biglog_redis
 
 class ParseLog(object):

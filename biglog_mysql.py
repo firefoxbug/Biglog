@@ -6,11 +6,6 @@ import sys
 import MySQLdb
 
 mysql_instance = ""
-mysql_host = '127.0.0.1'
-mysql_port = 3306
-mysql_username = 'root'
-mysql_password = 'zooboa.com'
-mysql_charset = 'utf8'
 
 class MySQLHelper:
 	def __init__(self,host,user,password,charset="utf8"):
@@ -82,7 +77,7 @@ class MySQLHelper:
 	def close(self):
 		self.conn.close()
 
-def mysql_init():
+def mysql_init(mysql_host='127.0.0.1',mysql_username='root',mysql_password='zooboa'):
 	try:
 		global mysql_instance
 		mysql_instance = MySQLHelper(mysql_host,mysql_username,mysql_password)		
@@ -91,7 +86,7 @@ def mysql_init():
 		sys.exit(1)
 
 if __name__ == '__main__':
-	mysql_init()
+	mysql_init(mysql_host='127.0.0.1',mysql_username='root',mysql_password='biglog')
 	fd = open("10000.txt")
 	while True:
 		sql_cmd = fd.readline()
