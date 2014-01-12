@@ -113,10 +113,16 @@ EOF
 
 function main()
 {
+	cur_dir=`pwd`
 	yum_update
 	install_python26
 	install_gearman
 	install_redis
+
+	chmod 755 ${cur_dir}/biglog
+	cp  ${cur_dir}/biglog /etc/init.d/
+	chkconfig --add biglog
+	service biglog restart
 }
 
 main
