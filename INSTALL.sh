@@ -6,6 +6,8 @@ if [ $(id -u) != "0" ]; then
 	exit 1
 fi
 
+cur_dir=`pwd`
+
 function yum_update()
 {
 	IS_64=`uname -a | grep "x86_64"`
@@ -111,14 +113,22 @@ EOF
 	redis-server /etc/redis.conf
 }
 
+function install_biglog()
+{
+	biglog_install_path="/usr/local/biglog"
+	[ -d "$biglog_install_path" ] && mv $biglog_install_path ${biglog_install_path}.
+	cp -raf $cur_dir/* biglog_install_path/
+}
+
 function main()
 {
-	cur_dir=`pwd`
 	yum_update
 	install_python26
 	install_gearman
 	install_redis
 
+	install_biglog
+	
 	chmod 755 ${cur_dir}/biglog
 	cp  ${cur_dir}/biglog /etc/init.d/
 	chkconfig --add biglog
