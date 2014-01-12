@@ -57,8 +57,8 @@ def redis_logs2sql():
 		sql_cmd = biglog_redis.redis_q.get('BiglogSql')
 		biglog_mysql.mysql_instance.insert_log(sql_cmd)
 
-def mysql_worker(mysql_info):
-	mysql_init(mysql_info['host'],mysql_info['username'],mysql_info['password'])
+def mysql_worker():
+	mysql_init()
 	biglog_redis.connect2redis(host='127.0.0.1')
 	while True:
 		sql_str = biglog_redis.redis_q.get('BiglogSqlList')
@@ -70,4 +70,4 @@ def mysql_worker(mysql_info):
 if __name__ == '__main__':
 #	gearman_logs2sql()
 #	redis_logs2sql
-	mysql_worker(mysql_info)
+	mysql_worker()

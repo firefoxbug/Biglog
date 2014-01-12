@@ -86,7 +86,7 @@ def mysql_init(mysql_host='127.0.0.1',mysql_username='root',mysql_password='zoob
 		sys.exit(1)
 
 if __name__ == '__main__':
-	mysql_init(mysql_host='127.0.0.1',mysql_username='root',mysql_password='biglog')
+	mysql_init(mysql_host='127.0.0.1',mysql_username='root',mysql_password='zooboa.com')
 	fd = open("10000.txt")
 	while True:
 		sql_cmd = fd.readline()

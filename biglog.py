@@ -13,7 +13,7 @@ from BigLogRecv import biglog_recv_input_log
 sys.path.append("./daemon")
 from BigLogDomain import domain_worker
 sys.path.append("./daemon/geoip")
-from BigLogGeo import geoip_worker
+from BigLogGeoIP import geoip_worker
 from BigLogMysql import mysql_worker
 
 '''
@@ -48,7 +48,7 @@ biglog {
 
 class BigLog():
 	"""biglog 主类"""
-	def __init__(self, arg):
+	def __init__(self	):
 		self.child_process_pid = {"RECV":-1,"COLLECT":-1,"GeoIP":-1,"DOMAIN":-1,"MYSQL":[]}
 
 		self.biglog = {}
@@ -83,8 +83,13 @@ class BigLog():
 
 	"""启动所有进程"""
 	def start_work(self):
+		"""启动IP地理位置查询进程"""
 		self.start_GeoIP()
-
+		self.parse_log_type()
+		
+		print "PID 			PorcessNmae"
+		for key in self.child_process_pid:
+			print self.child_process_pid[key],"			",key
 
 	"""IP地理位置查询守护"""
 	def start_GeoIP(self):
@@ -122,8 +127,8 @@ class BigLog():
 		else:
 			self.child_process_pid["RECV"] = pid		
 
-	"""解析输入和输出类型"""
-	def input_log_type(self):
+	"""解析输入和输出类型并且启动进程"""
+	def parse_log_type(self):
 		input_udp_port = 515
 		if self.biglog["input"] == "file":
 			print "Biglog input log type ==>> file"
@@ -135,9 +140,6 @@ class BigLog():
 				input_udp_port = self.biglog["input"]["syslog"]["udp"]
 				"""启动日志接收模块"""
 				self.start_Recv(input_udp_port)
-
-		"""启动IP地理位置查询进程"""
-		self.start_GeoIP()
 
 		if self.biglog["output"] == "mysql":
 			print "Biglog output log ==>> mysql"
@@ -155,7 +157,7 @@ class BigLog():
 
 def main():
 	biglog_i = BigLog()
-	biglog_i.parse_biglog_conf()
+	biglog_i.start_work()
 #	print biglog
 
 

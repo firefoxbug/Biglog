@@ -101,7 +101,6 @@ class DisplayLogs():
 	@classmethod
 	def display_ip_info(self,log,domain,log_type):
 #		self.join_gearman()
-		global geo_ip_search_ins
 #		global biglog_sql
 
 		db_name = domain.replace(".","_").replace("-","_")

@@ -13,7 +13,7 @@ sleep 1
 function stop_biglog()
 {
 	kill `ps axu | grep "BigLogDomain" | awk '{print $2}'` > /dev/null 2>&1 &
-	kill `ps axu | grep "BigLogGeo" | awk '{print $2}'` > /dev/null 2>&1 &
+	kill `ps axu | grep "BigLogGeoIP" | awk '{print $2}'` > /dev/null 2>&1 &
 	kill `ps axu | grep "BigLogRecv" | awk '{print $2}'` > /dev/null 2>&1 &
 	kill `ps axu | grep "BigLogTimer" | awk '{print $2}'` > /dev/null 2>&1 &
 	kill `ps axu | grep "BigLogMysql" | awk '{print $2}'` > /dev/null 2>&1 &
@@ -59,7 +59,7 @@ function start_biglog()
 
 	pushd ${cur_dir}/daemon
 	pushd geoip
-	nohup python2.6 -u BigLogGeo.py > ${cur_dir}/logs/BigLogGeo.log 2>&1 &
+	nohup python2.6 -u BigLogGeoIP.py > ${cur_dir}/logs/BigLogGeo.log 2>&1 &
 	popd
 	popd
 

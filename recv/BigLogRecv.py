@@ -11,8 +11,8 @@ sys.path.append("../")
 from log_trans import RecvLog
 from biglog_redis import connect2redis
 
-def main(PORT=515):
-	biglog_recv_input_log(PORT=515)
+def main():
+	biglog_recv_input_log(514)
 
 def biglog_recv_input_log(PORT=515):
 	connect2redis(host='127.0.0.1')
