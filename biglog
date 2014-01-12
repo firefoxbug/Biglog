@@ -27,7 +27,7 @@ start()
 			echo -e "\033[41;37m ERROR \033[0m : $EXEC is running"
 			exit 1
 		fi
-#		change_console_ip
+
 		echo "Starting $EXEC ..."
 
 		start_biglog
@@ -85,20 +85,20 @@ function start_biglog()
 	start_gearmand
 
 	work_dir="."
-	pushd ${work_dir}/daemon
-	nohup python2.6 -u BigLogDomain.py > ${work_dir}/logs/BigLogDomain.log 2>&1 &
-	nohup python2.6 -u BigLogMysql.py > ${work_dir}/logs/BigLogMysql.log 2>&1 &
-	nohup python2.6 -u BigLogMysql.py > ${work_dir}/logs/BigLogMysql.log 2>&1 &
-	nohup python2.6 -u BigLogGeoIP.py > ${work_dir}/logs/BigLogGeo.log 2>&1 &
-	popd
+	cd ${work_dir}/daemon
+	nohup python2.6 -u BigLogDomain.py > ../logs/BigLogDomain.log 2>&1 &
+	nohup python2.6 -u BigLogMysql.py > ../logs/BigLogMysql.log 2>&1 &
+	nohup python2.6 -u BigLogMysql.py > ../logs/BigLogMysql.log 2>&1 &
+	nohup python2.6 -u BigLogGeoIP.py > ../logs/BigLogGeo.log 2>&1 &
+	cd ..
 
-	pushd ${work_dir}/recv
-	nohup python2.6 -u BigLogRecv.py > ${work_dir}/logs/BigLogRecv.log 2>&1 &
-	popd
+	cd ${work_dir}/recv
+	nohup python2.6 -u BigLogRecv.py > ../logs/BigLogRecv.log 2>&1 &
+	cd ..
 
-	pushd ${work_dir}/collect
-	nohup python2.6 -u BigLogTimer.py > ${work_dir}/logs/BigLogTimer.log 2>&1 &
-	popd
+	cd ${work_dir}/collect
+	nohup python2.6 -u BigLogTimer.py > ../logs/BigLogTimer.log 2>&1 &
+	cd ..
 }
 
 status()
