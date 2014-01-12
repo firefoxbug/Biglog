@@ -14,7 +14,7 @@ import socket
 from log_parse import ParseLog
 import log_parse
 #from biglog_addjob import add_gearman_job
-import myredis
+import biglog_redis
 
 class RecvLog(object):
 	@classmethod
@@ -52,7 +52,7 @@ class RecvLog(object):
 				try :
 					if biglog_plog.parse(data):
 		#				print log_parse.log_info
-						myredis.redis_q.put('BiglogDict',json.dumps(log_parse.log_info))
+						biglog_redis.redis_q.put('BiglogDict',json.dumps(log_parse.log_info))
 #						add_gearman_job("BigLogCollect",log_parse.log_info)
 				except Exception,e:
 					print "[ERROR] : %s"%str(e)		

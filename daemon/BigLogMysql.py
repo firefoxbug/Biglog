@@ -13,7 +13,7 @@ import json
 import gearman
 import biglog_mysql
 from biglog_mysql import mysql_init
-import myredis
+import biglog_redis
 
 class CustomGearmanWorker(gearman.GearmanWorker):
 	def on_job_execute(self, current_job):
@@ -52,16 +52,16 @@ def gearman_logs2sql():
 
 def redis_logs2sql():
 	mysql_init()
-	myredis.connect2redis(host='127.0.0.1')
+	biglog_redis.connect2redis(host='127.0.0.1')
 	while True:
-		sql_cmd = myredis.redis_q.get('BiglogSql')
+		sql_cmd = biglog_redis.redis_q.get('BiglogSql')
 		biglog_mysql.mysql_instance.insert_log(sql_cmd)
 
 def redis_logs2sqlList():
 	mysql_init()
-	myredis.connect2redis(host='127.0.0.1')
+	biglog_redis.connect2redis(host='127.0.0.1')
 	while True:
-		sql_str = myredis.redis_q.get('BiglogSqlList')
+		sql_str = biglog_redis.redis_q.get('BiglogSqlList')
 		sql_dic = json.loads(sql_str)
 		sql = sql_dic['sql']
 		args = sql_dic['args']

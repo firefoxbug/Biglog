@@ -14,10 +14,9 @@ function stop_biglog()
 {
 	kill `ps axu | grep "BigLogDomain" | awk '{print $2}'` > /dev/null 2>&1 &
 	kill `ps axu | grep "BigLogGeo" | awk '{print $2}'` > /dev/null 2>&1 &
-	kill `ps axu | grep "biglog_recv" | awk '{print $2}'` > /dev/null 2>&1 &
-	kill `ps axu | grep "biglog_collect" | awk '{print $2}'` > /dev/null 2>&1 &
+	kill `ps axu | grep "BigLogRecv" | awk '{print $2}'` > /dev/null 2>&1 &
+	kill `ps axu | grep "BigLogTimer" | awk '{print $2}'` > /dev/null 2>&1 &
 	kill `ps axu | grep "BigLogMysql" | awk '{print $2}'` > /dev/null 2>&1 &
-	kill `ps axu | grep "biglog_time" | awk '{print $2}'` > /dev/null 2>&1 &
 }
 
 function start_redis()
@@ -41,6 +40,12 @@ function start_gearmand()
 	fi
 }
 
+function stop_gearmand()
+{
+	#停止gearmand
+	kill `ps axu | grep gearman | awk '{print $2}'`
+}
+
 function start_biglog()
 {
 	start_redis
@@ -59,12 +64,12 @@ function start_biglog()
 	popd
 
 	pushd ${cur_dir}/recv
-	nohup python2.6 -u biglog_recv.py > ${cur_dir}/logs/biglog_recv.log 2>&1 &
+	nohup python2.6 -u BigLogRecv.py > ${cur_dir}/logs/BigLogRecv.log 2>&1 &
 	popd
 
 	pushd ${cur_dir}/collect
 	#nohup python2.6 biglog_collect.py > ${cur_dir}/logs/biglog_collect.log 2>&1 &
-	nohup python2.6 -u biglog_timer.py > ${cur_dir}/logs/biglog_timer.log 2>&1 &
+	nohup python2.6 -u BigLogTimer.py > ${cur_dir}/logs/BigLogTimer.log 2>&1 &
 	popd
 }
 

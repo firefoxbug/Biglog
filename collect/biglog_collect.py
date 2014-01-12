@@ -11,7 +11,7 @@ sys.path.append("../daemon")
 from data_trans import RecvLog
 from biglog_mysql import mysql_init
 #from BigLogCollect import collect_log
-from myredis import connect2redis
+from biglog_redis import connect2redis
 import biglog_addjob import connect2gearman
 
 def main():

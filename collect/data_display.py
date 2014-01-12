@@ -18,7 +18,7 @@ import sys
 import gearman
 sys.path.append("../")
 import biglog_mysql
-import myredis
+import biglog_redis
 
 import biglog_addjob
 unit_summary = {}
@@ -131,7 +131,7 @@ class DisplayLogs():
 		sql_dic = {}
 		sql_dic['sql'] = insert_log_cmd
 		sql_dic['args'] = ip_values_list
-		myredis.redis_q.put('BiglogSqlList',json.dumps(sql_dic))
+		biglog_redis.redis_q.put('BiglogSqlList',json.dumps(sql_dic))
 #		biglog_mysql.mysql_instance.insert_many_log(insert_log_cmd,ip_values_list)
 #			biglog_mysql.mysql_instance.insert_log(sql_cmd)
 #			biglog_sql.send_sqlcmd(sql_cmd)
@@ -225,7 +225,7 @@ class DisplayLogs():
 		sql_dic['sql'] = insert_log_cmd
 		sql_dic['args'] = values_list
 	#	biglog_mysql.mysql_instance.insert_many_log(insert_log_cmd,values_list)
-		myredis.redis_q.put('BiglogSqlList',json.dumps(sql_dic))
+		biglog_redis.redis_q.put('BiglogSqlList',json.dumps(sql_dic))
 
 	# count all request numbers
 	@classmethod
@@ -257,7 +257,7 @@ class DisplayLogs():
 #		insert_log_cmd = "insert into %s.%s (_date,_time,unit,%s,percent,request_count,bandwidth,unix_time)values('%s', '%s', '%s', '%s','%s','%s','%s','%s');"%(db_name,log_type,log_type,date,time_str,insert_time['UNIT'],MySQLdb.escape_string(log_type_value),percent,req_cnt,bw,unix_time)
 #		print insert_log_cmd
 #		self.add_sqls_job(insert_log_cmd)
-#		myredis.redis_q.put('BiglogSql',insert_log_cmd)
+#		biglog_redis.redis_q.put('BiglogSql',insert_log_cmd)
 		return (date,time_str,insert_time['UNIT'],MySQLdb.escape_string(log_type_value),percent,req_cnt,bw,unix_time)
 
 	@classmethod
@@ -269,7 +269,7 @@ class DisplayLogs():
 #		insert_log_cmd = "insert into %s.%s (_date,_time,unit,%s,percent,request_count,unix_time) values ('%s', '%s', '%s', '%s','%s','%s','%s');"%(db_name,log_type,log_type,date,time_str,insert_time['UNIT'],MySQLdb.escape_string(log_type_value),percent,req_cnt,unix_time)
 #		print insert_log_cmd
 #		self.add_sqls_job(insert_log_cmd)
-#		myredis.redis_q.put('BiglogSql',insert_log_cmd)
+#		biglog_redis.redis_q.put('BiglogSql',insert_log_cmd)
 		return (date,time_str,insert_time['UNIT'],MySQLdb.escape_string(log_type_value),percent,req_cnt,unix_time)
 		
 	@classmethod
@@ -281,5 +281,5 @@ class DisplayLogs():
 #		insert_log_cmd = "insert into %s.%s (_date,_time,unit,%s,percent,request_count,bandwidth,unix_time,country_code,country_desc,region,city,net) values ('%s', '%s', 'monitue', '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');"%(db_name,log_type,log_type,date,time_str,MySQLdb.escape_string(log_type_value),percent,req_cnt,bw,unix_time,ip_location['country_code'],ip_location['country_desc'],ip_location['region'],ip_location['city'],ip_location['net'])
 #		print insert_log_cmd
 #		self.add_sqls_job(insert_log_cmd)
-#		myredis.redis_q.put('BiglogSql',insert_log_cmd)
+#		biglog_redis.redis_q.put('BiglogSql',insert_log_cmd)
 		return (date,time_str,MySQLdb.escape_string(log_type_value),percent,req_cnt,bw,unix_time,ip_location['country_code'],ip_location['country_desc'],ip_location['region'],ip_location['city'],ip_location['net'])

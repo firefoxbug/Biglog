@@ -13,9 +13,7 @@ import json
 import time
 import datetime
 sys.path.append("../")
-#sys.path.append("../collect")
-#sys.path.append("./collect")
-import myredis
+import biglog_redis
 from data_record import RecordLogInfo
 from data_display import DisplayLogs
 from biglog_addjob import connect2gearman
@@ -58,11 +56,11 @@ class BiglogTimer(threading.Thread): #The BiglogTimer class is derived from the 
 	def run(self): #Overwrite run() method, put what you want the thread do here
 		global biglog_rl
 		while not self.thread_stop:
-			data = myredis.redis_q.get('BiglogDict')
+			data = biglog_redis.redis_q.get('BiglogDict')
 			log_info = json.loads(data)
 #			print log_info
 			biglog_rl.record_log_info(log_info)
-		print "exit..."
+#		print "exit..."
 
 	def _stop(self):
 		global time_str 
@@ -73,13 +71,15 @@ class BiglogTimer(threading.Thread): #The BiglogTimer class is derived from the 
 		insert_log_time['time_str'] = time_str
 		insert_log_time['time_num'] = time_unix
 		insert_log_time['UNIT'] = 'second'
+
+		#时间一到，就进行统计，对这段时间内的日志统计进行呈现或者把sql语句导入redis
 		DisplayLogs.display_log_summary(biglog_rl.log,biglog_rl.log_key,insert_log_time)
 		biglog_rl._clear()
 
 if __name__ == '__main__':
 	Watcher()
 	connect2gearman()
-	myredis.connect2redis(host='127.0.0.1')
+	biglog_redis.connect2redis(host='127.0.0.1')
 	biglog_rl = RecordLogInfo()
 	while True:
 		time_str = time.strftime('%Y-%m-%d:%H:%M:%S',time.localtime(time.time()))

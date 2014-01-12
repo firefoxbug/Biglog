@@ -13,7 +13,7 @@ import socket
 
 from data_record import RecordLogInfo
 #from BigLogCollect import collect_log
-import myredis
+import biglog_redis
 
 class RecvLog(object):
 	@classmethod
@@ -55,7 +55,7 @@ class RecvLog(object):
 		biglog_rl = RecordLogInfo()
 		try:
 			while True:
-				data = myredis.redis_q.get('BiglogDict')
+				data = biglog_redis.redis_q.get('BiglogDict')
 				log_info = json.loads(data)
 #				print log_info
 				biglog_rl.record_log_info(log_info)

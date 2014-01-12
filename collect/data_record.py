@@ -25,7 +25,7 @@ class RecordLogInfo(object):
 		self.INTERVAL = 60
 		self.BASE_TIME_FORMAT = '%Y-%m-%d %H:%M:00'
 		self.MYSQL_TIME_FORMAT = "%Y-%m-%d:%H:%M:00"
-		self.UNIT = "minute"
+		self.UNIT = "second"
 
 		self.log_key = {}
 		self.log_key['KEY_IP'] = "visitor_ip"					# request flow
@@ -68,6 +68,7 @@ class RecordLogInfo(object):
 		self.process_request_data(domain,self.log_key['KEY_BROWSER'],log_info['browser_type'])
 		self.process_request_data(domain,self.log_key['KEY_OS_TYPE'],log_info['os_type'])
 
+"""这部分已经注释了，之前按照分钟进行统计"""
 	def expired(self,log_info):
 		if log_info['time_unix_all'] - self.base_time < self.INTERVAL:
 			# log time in specified time interval

@@ -15,7 +15,7 @@ import datetime
 log_info = {}
 
 from biglog_addjob import add_gearman_job
-import myredis
+import biglog_redis
 
 class ParseLog(object):
 	"""docstring for ParseLog"""
@@ -33,7 +33,7 @@ class ParseLog(object):
 		if not self.get_remote_ip():
 			return False
 
-		myredis.redis_q.put('BiglogDomainDB',log_info['db_name'])
+		biglog_redis.redis_q.put('BiglogDomainDB',log_info['db_name'])
 #		add_gearman_job("BigLogDomain",log_info['db_name'],wait_until_complete=False,background=True)
 #		add_gearman_job("BigLogDomain",log_info['db_name'])
 		

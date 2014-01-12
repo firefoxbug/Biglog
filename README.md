@@ -28,7 +28,7 @@ BigLog3增加了gearman模块，通过gearman模块来查询IP对应的地理位
 
 biglog_recv.py 监听udp 515端口的日志，对单条日志分析并且存储json到redis
 
-biglog_timer.py 从redis里面拿出json格式的日志，一段时间(30S)做一次统计分析并导入到redis
+BigLogTimer.py 从redis里面拿出json格式的日志，一段时间(30S)做一次统计分析并导入到redis
 
 BigLogTimer.py 单条日志信息（字典）接收,可以指定统计的时间
 
