@@ -1,0 +1,132 @@
+#!/bin/bash
+
+#description: biglog
+#chkconfig: 2345 20 81
+
+EXEC="biglog"
+
+. /etc/rc.d/init.d/functions
+
+PID_FILE="/var/run/biglog.pid"
+[ -f "$PID_FILE" ] || touch $PID_FILE
+
+stop()
+{
+		echo "Stoping $EXEC ..."
+		echo "" > $PID_FILE
+		
+		stop_biglog
+
+		usleep 100
+		echo -e "Shutting down $EXEC: \033[41;37m [  OK  ] \033[0m"    
+}
+
+start()
+{
+		if [ "`cat $PID_FILE`" == "running" ];then
+			echo -e "\033[41;37m ERROR \033[0m : $EXEC is running"
+			exit 1
+		fi
+#		change_console_ip
+		echo "Starting $EXEC ..."
+
+		start_biglog
+		
+		echo "running" > $PID_FILE
+		usleep 100
+		echo -e "Starting $EXEC: \033[41;37m [  OK  ] \033[0m"         
+}
+
+restart()
+{
+	stop
+	start
+}
+
+function stop_biglog()
+{
+	kill `ps axu | grep "BigLogDomain" | awk '{print $2}'` > /dev/null 2>&1 &
+	kill `ps axu | grep "BigLogGeoIP" | awk '{print $2}'` > /dev/null 2>&1 &
+	kill `ps axu | grep "BigLogRecv" | awk '{print $2}'` > /dev/null 2>&1 &
+	kill `ps axu | grep "BigLogTimer" | awk '{print $2}'` > /dev/null 2>&1 &
+	kill `ps axu | grep "BigLogMysql" | awk '{print $2}'` > /dev/null 2>&1 &
+}
+
+function start_redis()
+{
+	#启动redis
+	lines=`ps axu | grep redis | wc -l | awk '{print $1}'`
+	if [ "$lines" != "1" ];then
+		#redis already running
+		return
+	fi
+	redis-server /etc/redis.conf
+}
+
+function start_gearmand()
+{
+	#启动gearmand
+	lines=`ps axu | grep gearman | wc -l | awk '{print $1}'`
+	if [ "$lines" == "1" ];then
+		echo "starting gearmand ..."
+		gearmand -d
+	fi
+}
+
+function stop_gearmand()
+{
+	#停止gearmand
+	kill `ps axu | grep gearman | awk '{print $2}'`
+}
+
+function start_biglog()
+{
+	start_redis
+	start_gearmand
+
+	work_dir="."
+	pushd ${work_dir}/daemon
+	nohup python2.6 -u BigLogDomain.py > ${work_dir}/logs/BigLogDomain.log 2>&1 &
+	nohup python2.6 -u BigLogMysql.py > ${work_dir}/logs/BigLogMysql.log 2>&1 &
+	nohup python2.6 -u BigLogMysql.py > ${work_dir}/logs/BigLogMysql.log 2>&1 &
+	nohup python2.6 -u BigLogGeoIP.py > ${work_dir}/logs/BigLogGeo.log 2>&1 &
+	popd
+
+	pushd ${work_dir}/recv
+	nohup python2.6 -u BigLogRecv.py > ${work_dir}/logs/BigLogRecv.log 2>&1 &
+	popd
+
+	pushd ${work_dir}/collect
+	nohup python2.6 -u BigLogTimer.py > ${work_dir}/logs/BigLogTimer.log 2>&1 &
+	popd
+}
+
+status()
+{
+       if [ "`cat $PID_FILE`" == "running" ]
+       then
+              echo "$EXEC is running"
+       else
+              echo "$EXEC is not running"
+       fi       
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		restart
+		;;
+    status)
+        status
+        ;;
+	*)
+		echo "Usage: service $EXEC {start|stop|restart|status}"
+		exit 1
+esac
+
+exit $?
