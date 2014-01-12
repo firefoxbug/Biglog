@@ -16,8 +16,7 @@ INSTALL
 
 RUN
 ------
-./biglog.sh
-
+service biglog [start|stop|restart|status]
 
 版本更新说明
 ------------
