@@ -12,7 +12,16 @@ from log_trans import RecvLog
 from biglog_redis import connect2redis
 
 def main():
-	biglog_recv_input_log(514)
+
+	"""conf debug"""
+	try:
+		from biglog_conf import parse_biglog_conf
+		input_info = parse_biglog_conf()
+		udp_input_port = input_info['udp_port']
+	except :
+		udp_input_port = 515
+
+	biglog_recv_input_log(udp_input_port)
 
 def biglog_recv_input_log(PORT=515):
 	connect2redis(host='127.0.0.1')
