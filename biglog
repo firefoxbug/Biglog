@@ -103,12 +103,12 @@ function start_biglog()
 
 status()
 {
-       if [ "`cat $PID_FILE`" == "running" ]
-       then
-              echo "$EXEC is running"
-       else
-              echo "$EXEC is not running"
-       fi       
+	   if [ "`cat $PID_FILE`" == "running" ]
+	   then
+			  echo "$EXEC is running"
+	   else
+			  echo "$EXEC is not running"
+	   fi       
 }
 
 case "$1" in
@@ -121,9 +121,9 @@ case "$1" in
 	restart)
 		restart
 		;;
-    status)
-        status
-        ;;
+	status)
+		status
+		;;
 	*)
 		echo "Usage: service $EXEC {start|stop|restart|status}"
 		exit 1
