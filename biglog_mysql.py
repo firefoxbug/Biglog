@@ -79,6 +79,15 @@ class MySQLHelper:
 
 def mysql_init(mysql_host='127.0.0.1',mysql_username='root',mysql_password='zooboa'):
 	try:
+		from biglog_conf import parse_biglog_conf
+		input_info = parse_biglog_conf()
+		mysql_host = input_info['host']
+		mysql_username = input_info['username']
+		mysql_password = input_info['password']
+	except Exception, e:
+		raise e
+
+	try:
 		global mysql_instance
 		mysql_instance = MySQLHelper(mysql_host,mysql_username,mysql_password)		
 	except Exception, e:
