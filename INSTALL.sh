@@ -120,3 +120,5 @@ function main()
 }
 
 main
+
+echo "Install biglog ok"
